@@ -40,6 +40,7 @@
       public $customer_name = null;
       public $customer_surname = null;
       public $description = null;
+      public $invoice_data = null;
 
       //Variable facultative identifiant
       public $channels = 'ALL';
@@ -56,7 +57,6 @@
       public $customer_country = null;
       public $customer_state = null;
       public $customer_zip_code = null; 
-
       //variables des payments check
       public $token = null;
       public $chk_payment_date = null;
@@ -92,6 +92,7 @@
         $this->amount = $param['amount'];
         $this->currency = $param['currency'];
         $this->description = $param['description'];
+        $this->invoice_data = $param['invoice_data'];
         //champs quasi obligatoire
         $this->customer_name = $param['customer_name'];
         $this->customer_surname = $param['customer_surname'];
@@ -236,6 +237,7 @@
           "return_url"=> $this->return_url,
           "channels"=> $this->channels,
           "alternative_currency"=> $this->alternative_currency,
+          "invoice_data" => $this->invoice_data,
           "customer_email"=> $this->customer_email,
           "customer_phone_number"=> $this->customer_phone_number,
           "customer_address"=> $this->customer_address,

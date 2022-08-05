@@ -35,6 +35,15 @@ try {
     //return url
     $return_url = $commande->getCurrentUrl().'cinetpay-sdk-php/return/return.php';
     $channels = "ALL";
+    
+    /*information supplémentaire que vous voulez afficher
+     sur la facture de CinetPay(Supporte trois variables 
+     que vous nommez à votre convenance)*/
+    $invoice_data = array(
+        "Data 1" => "",
+        "Data 2" => "",
+        "Data 3" => ""
+    );
 
     //
     $formData = array(
@@ -47,8 +56,7 @@ try {
         "notify_url" => $notify_url,
         "return_url" => $return_url,
         "channels" => $channels,
-        "metadata" => "", // utiliser cette variable pour recevoir des informations personnalisés.
-        "alternative_currency" => "",//Valeur de la transaction dans une devise alternative
+        "invoice_data" => $invoice_data,
         //pour afficher le paiement par carte de credit
         "customer_email" => "", //l'email du client
         "customer_phone_number" => "", //Le numéro de téléphone du client
