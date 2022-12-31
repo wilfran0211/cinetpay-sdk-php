@@ -21,10 +21,9 @@
   * @package  cinetpay
   * @copyright Copyright (c) 2015-2021 CinetPay Inc. (https://www.cinetpay.com)
   */
-
   class CinetPay 
   {
-      protected $BASE_URL = null; //generer lien de paiement Pour la production
+      protected ?string $BASE_URL; //generer lien de paiement Pour la production
 
       //Variable obligatoire identifiant
     /**
@@ -32,43 +31,40 @@
      * @var string
      */
     
-      public $amount = null ;
-      public $apikey = null ;
-      public $site_id = null;
-      public $currency = 'XOF';
-      public $transaction_id = null;
-      public $customer_name = null;
-      public $customer_surname = null;
-      public $description = null;
-      public $invoice_data = null;
+      public int|float $amount ;
+      public string $currency = 'XOF';
+      public ?string $transaction_id;
+      public ?string $customer_name;
+      public ?string $customer_surname;
+      public ?string $description;
+      public ?array $invoice_data;
 
       //Variable facultative identifiant
-      public $channels = 'ALL';
-      public $notify_url= null;
-      public $return_url= null;
+      public string $channels = 'ALL';
+      public ?string $notify_url;
+      public ?string $return_url;
 
       //toute les variables 
-      public $metadata = null;
-      public $alternative_currency = null;
-      public $customer_email = null;
-      public $customer_phone_number = null;
-      public $customer_address = null;
-      public $customer_city = null;
-      public $customer_country = null;
-      public $customer_state = null;
-      public $customer_zip_code = null; 
+      public string $metadata = "";
+      public string $alternative_currency = "";
+      public string $customer_email = "";
+      public string $customer_phone_number = "";
+      public string $customer_address = "";
+      public string $customer_city = "";
+      public string $customer_country = "";
+      public string $customer_state = "";
+      public string $customer_zip_code = ""; 
       //variables des payments check
-      public $token = null;
-      public $chk_payment_date = null;
-      public $chk_operator_id = null;
-      public $chk_payment_method = null;
-      public $chk_code = null;
-      public $chk_message = null;
-      public $chk_api_response_id = null;
-      public $chk_description = null;
-      public $chk_amount = null;
-      public $chk_currency = null;
-      public $chk_metadata = null;
+      public ?string $chk_payment_date;
+      public ?string $chk_operator_id;
+      public ?string $chk_payment_method;
+      public ?string $chk_code;
+      public ?string $chk_message;
+      public ?string $chk_api_response_id;
+      public ?string $chk_description;
+      public ?string $chk_amount;
+      public ?string $chk_currency;
+      public ?string $chk_metadata;
       /**
      * CinetPay constructor.
      * @param $site_id
@@ -76,15 +72,19 @@
      * @param string $version
      * @param array $params
      */
-      public function __construct($site_id, $apikey, $version = 'v2', $params = null)
+      public function __construct(
+        public int|string $site_id,
+        public ?string $apikey ,
+        // verification ssl sur curl
+        public bool $VerifySsl = false)
       {
-        $this->BASE_URL = sprintf('https://api-checkout.cinetpay.com/%s/payment',strtolower($version)); 
+        $this->BASE_URL = 'https://api-checkout.cinetpay.com/v2/payment'; 
         $this->apikey = $apikey;
         $this->site_id = $site_id;
       }
 
       //generer lien de payment
-      public function generatePaymentLink($param)
+      public function generatePaymentLink(?array $param): array 
       {
         $this->CheckDataExist($param, "payment");
         //champs obligatoire
@@ -102,17 +102,17 @@
         if (!empty($param['channels'])) $this->channels = $param['channels'];
         //exception pour le CREDIT_CARD
         if ($this->channels == "CREDIT_CARD"  )
-        $this->checkDataExist($param, "paymentCard");
+         $this->checkDataExist($param, "paymentCard");
 
-      if (!empty($param['alternative_currency'])) $this->alternative_currency = $param['alternative_currency'];
-      if (!empty($param['customer_email']))  $this->customer_email = $param['customer_email'];
-      if (!empty($param['customer_phone_number']))  $this->customer_phone_number = $param['customer_phone_number'];
-      if (!empty($param['customer_address']))  $this->customer_address = $param['customer_address'];
-      if (!empty($param['customer_city']))  $this->customer_city = $param['customer_city'];
-      if (!empty($param['customer_country']))  $this->customer_country = $param['customer_country'];
-      if (!empty($param['customer_state']))  $this->customer_state = $param['customer_state'];
-      if (!empty($param['customer_zip_code']))  $this->customer_zip_code = $param['customer_zip_code'];
-      if (!empty($param['metadata']))  $this->metadata = $param['metadata'];
+          if (!empty($param['alternative_currency'])) $this->alternative_currency = $param['alternative_currency'];
+          if (!empty($param['customer_email']))  $this->customer_email = $param['customer_email'];
+          if (!empty($param['customer_phone_number']))  $this->customer_phone_number = $param['customer_phone_number'];
+          if (!empty($param['customer_address']))  $this->customer_address = $param['customer_address'];
+          if (!empty($param['customer_city']))  $this->customer_city = $param['customer_city'];
+          if (!empty($param['customer_country']))  $this->customer_country = $param['customer_country'];
+          if (!empty($param['customer_state']))  $this->customer_state = $param['customer_state'];
+          if (!empty($param['customer_zip_code']))  $this->customer_zip_code = $param['customer_zip_code'];
+          if (!empty($param['metadata']))  $this->metadata = $param['metadata'];
         //soumission des donnees
         $data = $this->getData();
         
@@ -201,7 +201,8 @@
                       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                       CURLOPT_CUSTOMREQUEST => $method,
                       CURLOPT_POSTFIELDS => json_encode($params),
-                      CURLOPT_SSL_VERIFYPEER => 0,
+                      CURLOPT_SSL_VERIFYPEER => $this->VerifySsl,
+                      CURLOPT_USERAGENT => 'textuseragent',
                       CURLOPT_HTTPHEADER => array(
                           "content-type:application/json"
                       ),
@@ -295,7 +296,7 @@
       /**
        * @return int
        */
-      public function generateTransId()
+      public function generateTransId(): string
       {
         $timestamp = time();
         $parts = explode(' ', microtime());

@@ -6,7 +6,7 @@ if (isset($_POST['cpm_trans_id'])) {
   
     try {
     
-        require_once __DIR__ . '/../src/new-guichet.php';
+        require_once __DIR__ . '/../src/cinetpay.php';
         require_once __DIR__ . '/../commande.php';
         require_once __DIR__ . '/../marchand.php';
 

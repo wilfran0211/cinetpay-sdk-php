@@ -1,5 +1,5 @@
 <?php
-    require_once __DIR__ . '/../src/new-guichet.php';
+    require_once __DIR__ . '/../src/cinetpay.php';
     require_once __DIR__ . '/../commande.php';
     include('../marchand.php');
 

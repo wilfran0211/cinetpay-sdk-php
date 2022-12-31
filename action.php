@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);*/
 
 // required libs
-require_once __DIR__ . '/src/new-guichet.php';
+require_once __DIR__ . '/src/cinetpay.php';
 include('marchand.php');
 include('commande.php');
 
@@ -47,7 +47,7 @@ try {
 
     //
     $formData = array(
-        "transaction_id"=> $id_transaction,
+         "transaction_id"=> $id_transaction,
         "amount"=> $amount,
         "currency"=> $currency,
         "customer_surname"=> $customer_name,
@@ -64,12 +64,12 @@ try {
         "customer_city" => "", // ville du client
         "customer_country" => "",//Le pays du client, la valeur à envoyer est le code ISO du pays (code à deux chiffre) ex : CI, BF, US, CA, FR
         "customer_state" => "", //L’état dans de la quel se trouve le client. Cette valeur est obligatoire si le client se trouve au États Unis d’Amérique (US) ou au Canada (CA)
-        "customer_zip_code" => "" //Le code postal du client
+        "customer_zip_code" => "" //Le code postal du client 
     );
     // enregistrer la transaction dans votre base de donnée
     /*  $commande->create(); */
 
-    $CinetPay = new CinetPay($site_id, $apikey);
+    $CinetPay = new CinetPay($site_id, $apikey , $VerifySsl=false);//$VerifySsl=true <=> Pour activerr la verification ssl sur curl 
     $result = $CinetPay->generatePaymentLink($formData);
 
     if ($result["code"] == '201')

@@ -5,7 +5,7 @@ if (isset($_POST['cpm_trans_id'])) {
   
     try {
     
-        require_once __DIR__ . '/../src/new-guichet.php';
+        require_once __DIR__ . '/../src/cinetpay.php';
         require_once __DIR__ . '/../commande.php';
         require_once __DIR__ . '/../marchand.php';
 
@@ -21,7 +21,7 @@ if (isset($_POST['cpm_trans_id'])) {
             $xtoken = $_SERVER["HTTP_X_TOKEN"];
         }
         else{
-            $xtoken = "indisponible";
+            echo "X-token indisponible";
         }
 
         //Etape 3: Verifier que le token reçu dans l’en-tête correspond à celui que vous aurez généré.

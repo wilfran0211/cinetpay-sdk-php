@@ -42,7 +42,7 @@ if (isset($_POST['cpm_trans_id'])) {
   
     try {
     
-        require_once __DIR__ . '/../src/new-guichet.php';
+        require_once __DIR__ . '/../src/cinetpay.php';
         require_once __DIR__ . '/../commande.php';
         require_once __DIR__ . '/../marchand.php';
 
@@ -134,7 +134,7 @@ if (isset($_POST['cpm_trans_id'])) {
   
     try {
     
-        require_once __DIR__ . '/../src/new-guichet.php';
+        require_once __DIR__ . '/../src/cinetpay.php';
         require_once __DIR__ . '/../commande.php';
         require_once __DIR__ . '/../marchand.php';
 
@@ -252,7 +252,7 @@ La page de retour est la page où est redirigée le client après une transactio
 Exemple de page de retour :
 ```php
 <?php
-    require_once __DIR__ . '/../src/new-guichet.php';
+    require_once __DIR__ . '/../src/cinetpay.php';
     require_once __DIR__ . '/../commande.php';
     include('../marchand.php');
 
@@ -335,7 +335,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);*/
 
 // required libs
-require_once __DIR__ . '/src/new-guichet.php';
+require_once __DIR__ . '/src/cinetpay.php';
 include('marchand.php');
 include('commande.php');
 
@@ -367,9 +367,8 @@ try {
     $return_url = $commande->getCurrentUrl().'cinetpay-sdk-php/return/return.php';
     $channels = "ALL";
 
-    //
-    $formData = array(
-        "transaction_id"=> $id_transaction,
+   $formData = array(
+         "transaction_id"=> $id_transaction,
         "amount"=> $amount,
         "currency"=> $currency,
         "customer_surname"=> $customer_name,
@@ -378,8 +377,7 @@ try {
         "notify_url" => $notify_url,
         "return_url" => $return_url,
         "channels" => $channels,
-        "metadata" => "", // utiliser cette variable pour recevoir des informations personnalisés.
-        "alternative_currency" => "",//Valeur de la transaction dans une devise alternative
+        "invoice_data" => $invoice_data,
         //pour afficher le paiement par carte de credit
         "customer_email" => "", //l'email du client
         "customer_phone_number" => "", //Le numéro de téléphone du client
@@ -387,12 +385,12 @@ try {
         "customer_city" => "", // ville du client
         "customer_country" => "",//Le pays du client, la valeur à envoyer est le code ISO du pays (code à deux chiffre) ex : CI, BF, US, CA, FR
         "customer_state" => "", //L’état dans de la quel se trouve le client. Cette valeur est obligatoire si le client se trouve au États Unis d’Amérique (US) ou au Canada (CA)
-        "customer_zip_code" => "" //Le code postal du client
+        "customer_zip_code" => "" //Le code postal du client 
     );
     // enregistrer la transaction dans votre base de donnée
     /*  $commande->create(); */
 
-    $CinetPay = new CinetPay($site_id, $apikey);
+    $CinetPay = new CinetPay($site_id, $apikey , $VerifySsl=false);//$VerifySsl=true <=> Pour activerr la verification ssl sur curl 
     $result = $CinetPay->generatePaymentLink($formData);
 
     if ($result["code"] == '201')
